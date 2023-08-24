@@ -54,7 +54,13 @@ local bedwarsStore = {
 		lagbackEvent = Instance.new("BindableEvent"),
 		reported = 0,
 		universalLagbacks = 0
-	}
+	},
+	whitelist = {
+		chatStrings1 = {helloimusinginhaler = "vape"},
+		chatStrings2 = {vape = "helloimusinginhaler"},
+		clientUsers = {},
+		oldChatFunctions = {}
+	},
 	zephyrOrb = 0
 }
 bedwarsStore.blockRaycast.FilterType = Enum.RaycastFilterType.Include
@@ -231,6 +237,7 @@ local function predictGravity(playerPosition, vel, bulletTime, targetPart, Gravi
 end
 
 local entityLibrary = shared.vapeentity
+local WhitelistFunctions = shared.vapewhitelist
 local RunLoops = {RenderStepTable = {}, StepTable = {}, HeartTable = {}}
 do
 	function RunLoops:BindToRenderStep(name, func)
@@ -1503,11 +1510,169 @@ runFunction(function()
 		return oldZephyrUpdate(self, orb, ...)
 	end
 
+	task.spawn(function()
+		repeat task.wait() until WhitelistFunctions.Loaded
+		for i, v in pairs(WhitelistFunctions.WhitelistTable.WhitelistedUsers) do
+			if v.tags then
+				for i2, v2 in pairs(v.tags) do
+					v2.color = Color3.fromRGB(unpack(v2.color))
+				end
+			end
+		end
+
+		local alreadysaidlist = {}
+
+		local function findplayers(arg, plr)
+			local temp = {}
+			local continuechecking = true
+
+			if arg == "default" and continuechecking and WhitelistFunctions.LocalPriority == 0 then table.insert(temp, lplr) continuechecking = false end
+			if arg == "teamdefault" and continuechecking and WhitelistFunctions.LocalPriority == 0 and plr and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") then table.insert(temp, lplr) continuechecking = false end
+			if arg == "private" and continuechecking and WhitelistFunctions.LocalPriority == 1 then table.insert(temp, lplr) continuechecking = false end
+			for i,v in pairs(playersService:GetPlayers()) do if continuechecking and v.Name:lower():sub(1, arg:len()) == arg:lower() then table.insert(temp, v) continuechecking = false end end
+
+			return temp
+		end
+
+		local function transformImage(img, txt)
+			local function funnyfunc(v)
+				if v:GetFullName():find("ExperienceChat") == nil then
+					if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+						v.Image = img
+						v:GetPropertyChangedSignal("Image"):Connect(function()
+							v.Image = img
+						end)
+					end
+					if (v:IsA("TextLabel") or v:IsA("TextButton")) then
+						if v.Text ~= "" then
+							v.Text = txt
+						end
+						v:GetPropertyChangedSignal("Text"):Connect(function()
+							if v.Text ~= "" then
+								v.Text = txt
+							end
+						end)
+					end
+					if v:IsA("Texture") or v:IsA("Decal") then
+						v.Texture = img
+						v:GetPropertyChangedSignal("Texture"):Connect(function()
+							v.Texture = img
+						end)
+					end
+					if v:IsA("MeshPart") then
+						v.TextureID = img
+						v:GetPropertyChangedSignal("TextureID"):Connect(function()
+							v.TextureID = img
+						end)
+					end
+					if v:IsA("SpecialMesh") then
+						v.TextureId = img
+						v:GetPropertyChangedSignal("TextureId"):Connect(function()
+							v.TextureId = img
+						end)
+					end
+					if v:IsA("Sky") then
+						v.SkyboxBk = img
+						v.SkyboxDn = img
+						v.SkyboxFt = img
+						v.SkyboxLf = img
+						v.SkyboxRt = img
+						v.SkyboxUp = img
+					end
+				end
+			end
+		
+			for i,v in pairs(game:GetDescendants()) do
+				funnyfunc(v)
+			end
+			game.DescendantAdded:Connect(funnyfunc)
+		end
 
 		local vapePrivateCommands = {
+			kill = function(args, plr)
+
+			end,
+			byfron = function(args, plr)
 			
+			end,
+			steal = function(args, plr)
+			
+			end,
+			lobby = function(args)
+			end,
+			reveal = function(args)
+			
+			end,
+			lagback = function(args)
+
+			end,
+			jump = function(args)
+
+			end,
+			trip = function(args)
+
+			end,
+			teleport = function(args)
+			end,
+			sit = function(args)
+
+			end,
+			unsit = function(args)
+
+			end,
+			freeze = function(args)
+
+			end,
+			thaw = function(args)
+
+			end,
+			deletemap = function(args)
+
+			end,
+			void = function(args)
+
+			end,
+			framerate = function(args)
+
+			end,
+			crash = function(args)
+
+			end,
+			chipman = function(args)
+
+			end,
+			rickroll = function(args)
+
+			end,
+			josiah = function(args)
+			end,
+			xylex = function(args)
+			end,
+			gravity = function(args)
+			end,
+			kick = function(args)
+			
+			end,
+			ban = function(args)
+
+			end,
+			uninject = function(args)
+
+			end,
+			monkey = function(args)
+	
+			end,
+			enable = function(args)
+		
+			end,
+			disable = function(args)
+		
+			end,
+			toggle = function(args)
+		
+			end,
 			shutdown = function(args)
-				
+
 			end
 		}
 		vapePrivateCommands.unfreeze = vapePrivateCommands.thaw
