@@ -54,13 +54,7 @@ local bedwarsStore = {
 		lagbackEvent = Instance.new("BindableEvent"),
 		reported = 0,
 		universalLagbacks = 0
-	},
-	whitelist = {
-		chatStrings1 = {helloimusinginhaler = "vape"},
-		chatStrings2 = {vape = "helloimusinginhaler"},
-		clientUsers = {},
-		oldChatFunctions = {}
-	},
+	}
 	zephyrOrb = 0
 }
 bedwarsStore.blockRaycast.FilterType = Enum.RaycastFilterType.Include
@@ -237,7 +231,6 @@ local function predictGravity(playerPosition, vel, bulletTime, targetPart, Gravi
 end
 
 local entityLibrary = shared.vapeentity
-local WhitelistFunctions = shared.vapewhitelist
 local RunLoops = {RenderStepTable = {}, StepTable = {}, HeartTable = {}}
 do
 	function RunLoops:BindToRenderStep(name, func)
